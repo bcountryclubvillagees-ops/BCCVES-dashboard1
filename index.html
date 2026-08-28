@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BCCVES Dashboard - Baguio Country Club Village Elementary School</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:   #4a1a7a;
+      --secondary: #7b2fc9;
+      --accent:    #f4c430;
+      --light:     #f3eafc;
+      --white:     #ffffff;
+      --gray:      #f5f3f8;
+      --text:      #2c2040;
+      --muted:     #7f7a8d;
+      --radius:    12px;
+      --shadow:    0 4px 20px rgba(0,0,0,.10);
+      --transition: .25s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--gray); color: var(--text); min-height: 100vh; }
+
+    /* ── Top Bar ── */
+    .topbar { background: var(--primary); color: var(--white); font-size: .78rem; text-align: center; padding: 6px 16px; letter-spacing: .4px; }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--white);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.2);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    header img.logo { width: 62px; height: 62px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); flex-shrink: 0; }
+    .header-text h1 { font-size: clamp(.95rem, 2.8vw, 1.45rem); font-weight: 700; line-height: 1.2; }
+    .header-text p  { font-size: clamp(.7rem, 1.8vw, .85rem); opacity: .85; margin-top: 3px; }
+    .hamburger { display: none; margin-left: auto; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
+    .hamburger span { display: block; width: 26px; height: 3px; background: var(--white); border-radius: 2px; transition: var(--transition); }
+
+    /* ── Nav ── */
+    nav { background: var(--primary); border-top: 1px solid rgba(255,255,255,.12); }
+    nav ul { display: flex; list-style: none; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+    nav ul li a { display: flex; align-items: center; gap: 7px; padding: 12px 16px; color: rgba(255,255,255,.85); text-decoration: none; font-size: .85rem; font-weight: 500; transition: var(--transition); white-space: nowrap; }
+    nav ul li a:hover, nav ul li a.active { color: var(--white); background: rgba(255,255,255,.14); border-bottom: 3px solid var(--accent); }
+    nav ul li a .nav-icon { font-size: 1rem; }
+
+    /* ── Hero ── */
+    .hero { position: relative; width: 100%; height: 320px; overflow: hidden; }
+    .hero img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(26,82,118,.4), rgba(26,82,118,.8)); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--white); padding: 20px; }
+    .hero-overlay h2 { font-size: clamp(1.3rem, 4vw, 2.4rem); font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.4); }
+    .hero-overlay p  { font-size: clamp(.82rem, 2vw, 1.05rem); margin-top: 10px; opacity: .92; }
+
+    /* ── Main ── */
+    main { max-width: 1200px; margin: 0 auto; padding: 28px 20px 60px; }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── Section Header ── */
+    .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 3px solid var(--secondary); }
+    .section-header .sec-icon { width: 48px; height: 48px; background: var(--secondary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .section-header h2 { font-size: clamp(1.1rem, 3vw, 1.55rem); color: var(--primary); }
+
+    /* ── Dashboard Cards ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+    .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: transform var(--transition), box-shadow var(--transition); cursor: pointer; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,.15); }
+    .card-top { background: linear-gradient(135deg, var(--secondary), var(--primary)); padding: 20px 18px 16px; display: flex; align-items: center; gap: 14px; }
+    .card-top .card-ico { font-size: 1.9rem; background: rgba(255,255,255,.2); border-radius: 10px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card-top h3 { color: var(--white); font-size: .97rem; }
+    .card-body { padding: 12px 18px 16px; }
+    .card-body p { font-size: .82rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── Announcements ── */
+    .announcement-list { display: flex; flex-direction: column; gap: 16px; }
+    .announcement-item { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; border-left: 5px solid var(--accent); display: flex; gap: 16px; align-items: flex-start; }
+    .ann-icon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+    .ann-content h3  { font-size: 1rem; color: var(--primary); margin-bottom: 6px; }
+    .ann-content p   { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+    .ann-content .ann-date { font-size: .75rem; color: var(--accent); font-weight: 600; margin-top: 8px; }
+    .ann-pdf-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 7px 14px; background: var(--primary); color: var(--white); border-radius: 6px; text-decoration: none; font-size: .8rem; font-weight: 600; transition: var(--transition); }
+    .ann-pdf-link:hover { background: var(--secondary); }
+
+    /* ── Faculty Table ── */
+    .table-wrap { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--primary); color: var(--white); }
+    thead th { padding: 14px 18px; text-align: left; font-size: .87rem; white-space: nowrap; }
+    tbody tr { transition: background var(--transition); }
+    tbody tr:nth-child(even) { background: var(--light); }
+    tbody tr:hover { background: #d6eaf8; }
+    tbody td { padding: 12px 18px; font-size: .87rem; border-bottom: 1px solid #e8e8e8; }
+    .role-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .74rem; font-weight: 600; background: var(--light); color: var(--primary); }
+
+    /* ── Sub-cards ── */
+    .subcard-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .subcard { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 16px; display: flex; align-items: center; gap: 14px; transition: transform var(--transition), box-shadow var(--transition); border-top: 4px solid var(--secondary); }
+    .subcard:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+    .subcard .sc-num { width: 38px; height: 38px; background: var(--secondary); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .95rem; flex-shrink: 0; }
+    .subcard span { font-size: .88rem; font-weight: 600; color: var(--primary); }
+
+    /* ── Gallery Event Cards ── */
+    .gallery-events { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .gallery-event-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition); }
+    .gallery-event-card:hover { transform: translateY(-5px); box-shadow: 0 10px 28px rgba(0,0,0,.16); }
+    .gallery-event-thumb { width: 100%; height: 175px; object-fit: cover; display: block; }
+    .gallery-event-info { padding: 14px 16px; }
+    .gallery-event-info h3 { font-size: .95rem; color: var(--primary); margin-bottom: 4px; }
+    .gallery-event-info p  { font-size: .78rem; color: var(--muted); }
+    .gallery-event-info .photo-count { margin-top: 8px; font-size: .75rem; background: var(--light); color: var(--secondary); font-weight: 600; padding: 3px 8px; border-radius: 20px; display: inline-block; }
+
+    /* ── Lightbox ── */
+    .lightbox-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 1000; flex-direction: column; }
+    .lightbox-overlay.open { display: flex; }
+    .lightbox-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: rgba(0,0,0,.5); color: var(--white); flex-shrink: 0; }
+    .lightbox-header h3 { font-size: clamp(.85rem, 2.5vw, 1.1rem); }
+    .lightbox-close { background: none; border: none; color: var(--white); font-size: 2rem; cursor: pointer; line-height: 1; padding: 0 4px; }
+    .lightbox-close:hover { color: var(--accent); }
+    .lightbox-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 12px 60px; }
+    .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; box-shadow: 0 0 40px rgba(0,0,0,.6); }
+    .lb-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.15); border: none; color: var(--white); font-size: 2rem; cursor: pointer; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; transition: background var(--transition); z-index: 10; }
+    .lb-btn:hover { background: rgba(255,255,255,.3); }
+    .lb-prev { left: 8px; }
+    .lb-next { right: 8px; }
+    .lightbox-footer { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; background: rgba(0,0,0,.4); flex-shrink: 0; }
+    .lightbox-counter { color: rgba(255,255,255,.8); font-size: .82rem; }
+    .lightbox-thumbs { display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; background: rgba(0,0,0,.4); scrollbar-width: thin; }
+    .lightbox-thumbs::-webkit-scrollbar { height: 4px; }
+    .lightbox-thumbs::-webkit-scrollbar-thumb { background: rgba(255,255,255,.3); border-radius: 2px; }
+    .lb-thumb { width: 52px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer; opacity: .5; transition: opacity var(--transition), outline var(--transition); flex-shrink: 0; }
+    .lb-thumb.active, .lb-thumb:hover { opacity: 1; outline: 2px solid var(--accent); }
+
+    /* ── Footer ── */
+    footer { background: var(--primary); color: rgba(255,255,255,.75); text-align: center; padding: 18px 16px; font-size: .8rem; }
+    footer strong { color: var(--white); }
+
+    /* ── Mobile ── */
+    @media (max-width: 720px) {
+      .hamburger { display: flex; }
+      nav ul { display: none; flex-direction: column; }
+      nav ul.open { display: flex; }
+      nav ul li a { padding: 13px 20px; border-bottom: 1px solid rgba(255,255,255,.08); border-bottom-width: 1px !important; }
+      nav ul li a.active { border-left: 4px solid var(--accent); border-bottom: 1px solid rgba(255,255,255,.08) !important; }
+      .hero { height: 210px; }
+      header { padding: 12px 16px; }
+      header img.logo { width: 48px; height: 48px; }
+      .lightbox-body { padding: 8px 46px; }
+      .lb-btn { width: 38px; height: 38px; font-size: 1.5rem; }
+      .lb-prev { left: 4px; }
+      .lb-next { right: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">Baguio Country Club Village Elementary School (BCCVES) &nbsp;|&nbsp; Schools Division of Baguio City, District 1</div>
+
+<header>
+  <img class="logo" src="bccves logo.jpg" alt="BCCVES Logo" />
+  <div class="header-text">
+    <h1>BCCVES School Dashboard</h1>
+    <p>Baguio Country Club Village Elementary School</p>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<nav>
+  <ul id="navList">
+    <li><a href="#" class="nav-link active" data-section="home">       <span class="nav-icon">🏠</span> Home</a></li>
+    <li><a href="#" class="nav-link" data-section="announcements">     <span class="nav-icon">📢</span> Announcements</a></li>
+    <li><a href="#" class="nav-link" data-section="faculty">           <span class="nav-icon">👩‍🏫</span> Faculty &amp; Staff</a></li>
+    <li><a href="#" class="nav-link" data-section="learning">          <span class="nav-icon">📚</span> Learning Resources</a></li>
+    <li><a href="#" class="nav-link" data-section="minutes">           <span class="nav-icon">📋</span> Minutes Archive</a></li>
+    <li><a href="#" class="nav-link" data-section="reports">           <span class="nav-icon">📊</span> Reports</a></li>
+    <li><a href="#" class="nav-link" data-section="department">        <span class="nav-icon">🗂️</span> Department Files</a></li>
+    <li><a href="#" class="nav-link" data-section="photos">            <span class="nav-icon">📷</span> Photo Documentation</a></li>
+    <li><a href="#" class="nav-link" data-section="learners">          <span class="nav-icon">🎒</span> Learners Profile</a></li>
+  </ul>
+</nav>
+
+<!-- Hero Banner -->
+<div class="hero" id="heroSection">
+  <img src="bccves school.jpg" alt="BCCVES School"
+       onerror="this.src='headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/680303840_1668958717580166_5374802332322424728_n.jpg'" />
+  <div class="hero-overlay">
+    <h2>Welcome to BCCVES Dashboard</h2>
+    <p>Your central hub for school resources, announcements &amp; documentation.</p>
+  </div>
+</div>
+
+<main>
+
+  <!-- ── HOME ── -->
+  <section class="section active" id="home">
+    <div class="section-header">
+      <div class="sec-icon">🏠</div>
+      <h2>Dashboard Overview</h2>
+    </div>
+    <div class="cards-grid">
+      <div class="card" onclick="showSection('announcements')">
+        <div class="card-top"><div class="card-ico">📢</div><h3>Announcements</h3></div>
+        <div class="card-body"><p>Latest school memos, department orders, and notices.</p></div>
+      </div>
+      <div class="card" onclick="showSection('faculty')">
+        <div class="card-top"><div class="card-ico">👩‍🏫</div><h3>Faculty &amp; Staff</h3></div>
+        <div class="card-body"><p>Meet the dedicated teachers and administrative staff of BCCVES.</p></div>
+      </div>
+      <div class="card" onclick="showSection('learning')">
+        <div class="card-top"><div class="card-ico">📚</div><h3>Learning Resources</h3></div>
+        <div class="card-body"><p>Lesson plans, modules, activity sheets, exams, and research materials.</p></div>
+      </div>
+      <div class="card" onclick="showSection('minutes')">
+        <div class="card-top"><div class="card-ico">📋</div><h3>Minutes Archive</h3></div>
+        <div class="card-body"><p>Archived meeting minutes from faculty and LAC sessions.</p></div>
+      </div>
+      <div class="card" onclick="showSection('reports')">
+        <div class="card-top"><div class="card-ico">📊</div><h3>Reports</h3></div>
+        <div class="card-body"><p>Language mapping, Phil IRI, MPS, ARAL, and competency reports.</p></div>
+      </div>
+      <div class="card" onclick="showSection('department')">
+        <div class="card-top"><div class="card-ico">🗂️</div><h3>Department Files</h3></div>
+        <div class="card-body"><p>School Improvement Plan and Annual Implementation Plan.</p></div>
+      </div>
+      <div class="card" onclick="showSection('photos')">
+        <div class="card-top"><div class="card-ico">📷</div><h3>Photo Documentation</h3></div>
+        <div class="card-body"><p>Browse photo galleries from school events and activities.</p></div>
+      </div>
+      <div class="card" onclick="showSection('learners')">
+        <div class="card-top"><div class="card-ico">🎒</div><h3>Learners Profile</h3></div>
+        <div class="card-body"><p>Learner information, profiles, and related records.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ANNOUNCEMENTS ── -->
+  <section class="section" id="announcements">
+    <div class="section-header">
+      <div class="sec-icon">📢</div>
+      <h2>Announcements</h2>
+    </div>
+    <div class="announcement-list">
+      <div class="announcement-item">
+        <div class="ann-icon">📄</div>
+        <div class="ann-content">
+          <h3>DepEd Order No. S2026-015R</h3>
+          <p>Official department order for School Year 2026. All faculty and staff are directed to read and comply with the guidelines stated in this issuance.</p>
+          <div class="ann-date">📅 2026</div>
+          <a class="ann-pdf-link" href="headings/1 announcements/inside the announcement/DO_s2026_015r.pdf" target="_blank">📎 View PDF</a>
+        </div>
+      </div>
+      <div class="announcement-item">
+        <div class="ann-icon">📄</div>
+        <div class="ann-content">
+          <h3>DepEd Order No. S2026-009R</h3>
+          <p>Official department order for School Year 2026. All faculty and staff are directed to read and comply with the guidelines stated in this issuance.</p>
+          <div class="ann-date">📅 2026</div>
+          <a class="ann-pdf-link" href="headings/1 announcements/inside the announcement/DO_s2026_009r.pdf" target="_blank">📎 View PDF</a>
+        </div>
+      </div>
+      <div class="announcement-item">
+        <div class="ann-icon">🔔</div>
+        <div class="ann-content">
+          <h3>School Year 2026 — General Reminders</h3>
+          <p>All faculty and staff are reminded to check this dashboard regularly for updates, new orders, and memos from the division office. Files will be added as they are received.</p>
+          <div class="ann-date">📅 June 2026</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FACULTY & STAFF ── -->
+  <section class="section" id="faculty">
+    <div class="section-header">
+      <div class="sec-icon">👩‍🏫</div>
+      <h2>Faculty &amp; Staff</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Name</th><th>Position</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Jane L. Adolfo</td><td><span class="role-badge">School Head, Principal I</span></td></tr>
+          <tr><td>2</td><td>Eva Jackie Lou L. Badi</td><td><span class="role-badge">Master Teacher I</span></td></tr>
+          <tr><td>3</td><td>Mona Rizza Agsi</td><td><span class="role-badge">Teacher VI</span></td></tr>
+          <tr><td>4</td><td>Isabel S. Dagasen</td><td><span class="role-badge">Teacher VI</span></td></tr>
+          <tr><td>5</td><td>Merlyn D. Danglose</td><td><span class="role-badge">Teacher VI</span></td></tr>
+          <tr><td>6</td><td>Rowena C. Tibaldo</td><td><span class="role-badge">Teacher VI</span></td></tr>
+          <tr><td>7</td><td>Rosabel D. Geraga</td><td><span class="role-badge">Teacher IV</span></td></tr>
+          <tr><td>8</td><td>Saturnina A. Valenzuela</td><td><span class="role-badge">Teacher II</span></td></tr>
+          <tr><td>9</td><td>Grace A. Abigon</td><td><span class="role-badge">Teacher II</span></td></tr>
+          <tr><td>10</td><td>Cristobal Agpad</td><td><span class="role-badge">Teacher I</span></td></tr>
+          <tr><td>11</td><td>Ronna Lee A. Belingon</td><td><span class="role-badge">Teacher I</span></td></tr>
+          <tr><td>12</td><td>Jillian Joy K. Cister</td><td><span class="role-badge">Administrative Officer II</span></td></tr>
+          <tr><td>13</td><td>Claudio F. Salinas</td><td><span class="role-badge">Administrative Aide I</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── LEARNING RESOURCES ── -->
+  <section class="section" id="learning">
+    <div class="section-header">
+      <div class="sec-icon">📚</div>
+      <h2>Learning Resources (LRMDS)</h2>
+    </div>
+    <div class="subcard-list">
+      <div class="subcard">
+        <div class="sc-num">1</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <span>Lesson Plan</span>
+          <a href="headings/3 Learning Resources/lesson plan/OPENING-BLOCK_FIRST-WEEK.pdf" target="_blank" class="ann-pdf-link" style="font-size:.75rem;padding:5px 10px;margin-top:0;">📎 Opening Block – First Week</a>
+        </div>
+      </div>
+      <div class="subcard"><div class="sc-num">2</div><span>Modules</span></div>
+      <div class="subcard"><div class="sc-num">3</div><span>Learning Activity Sheets</span></div>
+      <div class="subcard"><div class="sc-num">4</div><span>Test / Exam</span></div>
+      <div class="subcard"><div class="sc-num">5</div><span>Research</span></div>
+    </div>
+  </section>
+
+  <!-- ── MINUTES ARCHIVE ── -->
+  <section class="section" id="minutes">
+    <div class="section-header">
+      <div class="sec-icon">📋</div>
+      <h2>Minutes Archive</h2>
+    </div>
+    <div class="announcement-list">
+      <div class="announcement-item" style="border-left-color: var(--secondary);">
+        <div class="ann-icon">📋</div>
+        <div class="ann-content">
+          <h3>Minutes of the Meeting — May 19, 2026</h3>
+          <p>Faculty Meeting 1 — School Year 2026 opening meeting minutes.</p>
+          <div class="ann-date">📅 May 19, 2026</div>
+          <a class="ann-pdf-link" href="headings/4 minutes archive/MOM 05-19-2026.pdf" target="_blank">📎 View PDF</a>
+        </div>
+      </div>
+      <div class="announcement-item" style="border-left-color: var(--secondary);">
+        <div class="ann-icon">📋</div>
+        <div class="ann-content">
+          <h3>Minutes of the Meeting — June 4, 2026</h3>
+          <p>Faculty Meeting 2 &amp; LAC Session 1 minutes.</p>
+          <div class="ann-date">📅 June 4, 2026</div>
+          <a class="ann-pdf-link" href="headings/4 minutes archive/MOM 06-04-2026.pdf" target="_blank">📎 View PDF</a>
+        </div>
+      </div>
+      <div class="announcement-item" style="border-left-color: var(--secondary);">
+        <div class="ann-icon">📋</div>
+        <div class="ann-content">
+          <h3>Minutes of the Meeting — June 22, 2026</h3>
+          <p>LAC Session minutes — June 22, 2026.</p>
+          <div class="ann-date">📅 June 22, 2026</div>
+          <a class="ann-pdf-link" href="headings/4 minutes archive/MOM 06-22-2026.pdf" target="_blank">📎 View PDF</a>
+        </div>
+      </div>
+      <div class="announcement-item" style="border-left-color: var(--secondary);">
+        <div class="ann-icon">📋</div>
+        <div class="ann-content">
+          <h3>Minutes of the Meeting — July 2, 2026</h3>
+          <p>Faculty Meeting minutes — July 2, 2026.</p>
+          <div class="ann-date">📅 July 2, 2026</div>
+          <a class="ann-pdf-link" href="headings/4 minutes archive/MOM 07-02-2026.pdf" target="_blank">📎 View PDF</a>
+        </div>
+      </div>
+      <div class="announcement-item" style="border-left-color: var(--secondary);">
+        <div class="ann-icon">📋</div>
+        <div class="ann-content">
+          <h3>Minutes of the Meeting — July 17, 2026</h3>
+          <p>Grade 4 IEP Meeting &amp; LAC Session minutes — July 17, 2026.</p>
+          <div class="ann-date">📅 July 17, 2026</div>
+          <a class="ann-pdf-link" href="headings/4 minutes archive/MOM 07-17-2026.pdf" target="_blank">📎 View PDF</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── REPORTS ── -->
+  <section class="section" id="reports">
+    <div class="section-header">
+      <div class="sec-icon">📊</div>
+      <h2>Reports</h2>
+    </div>
+    <div class="subcard-list">
+      <div class="subcard"><div class="sc-num">1</div><span>Language Mapping LIT</span></div>
+      <div class="subcard"><div class="sc-num">2</div><span>CRLA</span></div>
+      <div class="subcard" style="flex-direction:column;align-items:flex-start;gap:10px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="sc-num">3</div>
+          <span>RMA</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;padding-left:52px;width:100%;">
+          <strong style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Beginning of School Year</strong>
+          <a href="headings/5 reports/RMA Beginning of the School Year/RMA BOSY School Summary Key Stage 1.pdf" target="_blank" class="ann-pdf-link" style="font-size:.75rem;padding:5px 10px;margin-top:0;">📎 Key Stage 1 — School Summary</a>
+          <a href="headings/5 reports/RMA Beginning of the School Year/RMA BOSY School Summary Key Stage 2.pdf" target="_blank" class="ann-pdf-link" style="font-size:.75rem;padding:5px 10px;margin-top:0;">📎 Key Stage 2 — School Summary</a>
+        </div>
+      </div>
+      <div class="subcard"><div class="sc-num">4</div><span>Phil IRI</span></div>
+      <div class="subcard"><div class="sc-num">5</div><span>ARAL</span></div>
+      <div class="subcard"><div class="sc-num">6</div><span>MPS</span></div>
+      <div class="subcard"><div class="sc-num">7</div><span>Test Results</span></div>
+      <div class="subcard"><div class="sc-num">8</div><span>Least Learned Competencies</span></div>
+    </div>
+  </section>
+
+  <!-- ── DEPARTMENT FILES ── */  -->
+  <section class="section" id="department">
+    <div class="section-header">
+      <div class="sec-icon">🗂️</div>
+      <h2>Department Files</h2>
+    </div>
+    <div class="subcard-list">
+      <div class="subcard"><div class="sc-num">1</div><span>SIP — School Improvement Plan</span></div>
+      <div class="subcard"><div class="sc-num">2</div><span>AIP — Annual Implementation Plan</span></div>
+    </div>
+  </section>
+
+  <!-- ── PHOTO DOCUMENTATION ── -->
+  <section class="section" id="photos">
+    <div class="section-header">
+      <div class="sec-icon">📷</div>
+      <h2>Photo Documentation</h2>
+    </div>
+    <div class="gallery-events">
+
+      <div class="gallery-event-card" onclick="openGallery(0)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/680303840_1668958717580166_5374802332322424728_n.jpg"
+          alt="ARAL Summer" />
+        <div class="gallery-event-info">
+          <h3>ARAL Summer</h3>
+          <p>May 6 – June 2, 2026</p>
+          <span class="photo-count">📸 29 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(1)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/671343503_964290199643868_6601625901350856857_n.jpg"
+          alt="Three Term Orientation" />
+        <div class="gallery-event-info">
+          <h3>Three Term Orientation</h3>
+          <p>May 13, 2026</p>
+          <span class="photo-count">📸 11 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(2)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/3. Faculty Meeting 1 (May 19, 2026)/691111572_1432333638575242_4459237134017245977_n.jpg"
+          alt="Faculty Meeting 1" />
+        <div class="gallery-event-info">
+          <h3>Faculty Meeting 1</h3>
+          <p>May 19, 2026</p>
+          <span class="photo-count">📸 5 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(3)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/4. Brigada (June 1-5, 2026)/688414016_1017019010841497_5424121783235063767_n.jpg"
+          alt="Brigada Eskwela" />
+        <div class="gallery-event-info">
+          <h3>Brigada Eskwela</h3>
+          <p>June 1 – 5, 2026</p>
+          <span class="photo-count">📸 95 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(4)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/711075396_1371923561498270_439646979132246080_n.jpg"
+          alt="Faculty Meeting 2 and LAC 1" />
+        <div class="gallery-event-info">
+          <h3>Faculty Meeting 2 &amp; LAC 1</h3>
+          <p>June 4, 2026</p>
+          <span class="photo-count">📸 12 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(5)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/715769866_1961681851138411_294859852003394288_n.jpg"
+          alt="1st SPTA Meeting" />
+        <div class="gallery-event-info">
+          <h3>1st SPTA Meeting</h3>
+          <p>June 9, 2026</p>
+          <span class="photo-count">📸 19 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(6)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/716649917_1035579455566279_6167643326335885674_n.jpg"
+          alt="Grade 1 Vision Screening" />
+        <div class="gallery-event-info">
+          <h3>Grade 1 Vision Screening</h3>
+          <p>June 10, 2026</p>
+          <span class="photo-count">📸 11 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(7)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724009919_3126600214206237_4833429724576977157_n.jpg"
+          alt="Earthquake Drill" />
+        <div class="gallery-event-info">
+          <h3>Earthquake Drill</h3>
+          <p>June 18, 2026</p>
+          <span class="photo-count">📸 20 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(8)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/10. Faculty Meeting (June 26, 2026)/728744248_1953487695305331_229164219762531858_n.jpg"
+          alt="Faculty Meeting" />
+        <div class="gallery-event-info">
+          <h3>Faculty Meeting</h3>
+          <p>June 26, 2026</p>
+          <span class="photo-count">📸 4 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(9)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/11. Feeding Program (June 26, 2026)/727266835_1751428936295208_1842611310086502228_n.jpg"
+          alt="Feeding Program" />
+        <div class="gallery-event-info">
+          <h3>Feeding Program</h3>
+          <p>June 26, 2026</p>
+          <span class="photo-count">📸 12 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(10)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/12. Operation Kapkap (June 29, 2026)/730451168_27341663708869633_28788903327624334_n.jpg"
+          alt="Operation Kapkap" />
+        <div class="gallery-event-info">
+          <h3>Operation Kapkap</h3>
+          <p>June 29, 2026</p>
+          <span class="photo-count">📸 2 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(11)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/13. Faculty Meeting (July 2, 2026)/731334486_1435903965221979_5914585340631553070_n.jpg"
+          alt="Faculty Meeting July 2" />
+        <div class="gallery-event-info">
+          <h3>Faculty Meeting</h3>
+          <p>July 2, 2026</p>
+          <span class="photo-count">📸 3 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(12)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/734545830_2292598371549226_1956543814364940202_n.jpg"
+          alt="Anti-bullying" />
+        <div class="gallery-event-info">
+          <h3>Anti-Bullying Activity</h3>
+          <p>July 6, 2026</p>
+          <span class="photo-count">📸 10 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(13)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/15. Grade 4 IEP Meeting (July 17, 2026)/742489484_905185808609922_2385093470126113707_n.jpg"
+          alt="Grade 4 IEP Meeting" />
+        <div class="gallery-event-info">
+          <h3>Grade 4 IEP Meeting</h3>
+          <p>July 17, 2026</p>
+          <span class="photo-count">📸 6 photos</span>
+        </div>
+      </div>
+
+      <div class="gallery-event-card" onclick="openGallery(14)">
+        <img class="gallery-event-thumb"
+          src="headings/7 photo documentation/16. LAC Session on bullying and school shooting and stabbing (July 17, 2026)/744314942_2492231277957092_4971360402529189884_n.jpg"
+          alt="LAC Session on Bullying" />
+        <div class="gallery-event-info">
+          <h3>LAC Session — Bullying &amp; Safety</h3>
+          <p>July 17, 2026</p>
+          <span class="photo-count">📸 4 photos</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── LEARNERS PROFILE ── -->
+  <section class="section" id="learners">
+    <div class="section-header">
+      <div class="sec-icon">🎒</div>
+      <h2>Learners Profile</h2>
+    </div>
+    <div class="announcement-list">
+      <div class="announcement-item" style="border-left-color: var(--secondary);">
+        <div class="ann-icon">📁</div>
+        <div class="ann-content">
+          <h3>Learners Profile — School Year 2026</h3>
+          <p>This section will contain learner information, profiles, and related records. Files will be uploaded here as they become available.</p>
+          <div class="ann-date">📅 School Year 2026</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>BCCVES</strong> — Baguio Country Club Village Elementary School<br/>
+  Schools Division of Baguio City, District 1 &nbsp;|&nbsp; School Year 2026
+</footer>
+
+<!-- ── Lightbox ── -->
+<div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lightbox-header">
+    <h3 id="lbTitle">Event Name</h3>
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">✕</button>
+  </div>
+  <div class="lightbox-body">
+    <button class="lb-btn lb-prev" onclick="lbMove(-1)" aria-label="Previous photo">&#8249;</button>
+    <img class="lightbox-img" id="lbImg" src="" alt="Event photo" />
+    <button class="lb-btn lb-next" onclick="lbMove(1)" aria-label="Next photo">&#8250;</button>
+  </div>
+  <div class="lightbox-footer">
+    <span class="lightbox-counter" id="lbCounter">1 / 1</span>
+  </div>
+  <div class="lightbox-thumbs" id="lbThumbs"></div>
+</div>
+
+<script>
+// ── Gallery Data ──
+const EVENTS = [
+  {
+    title: 'ARAL Summer (May 6–June 2, 2026)',
+    photos: [
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/680303840_1668958717580166_5374802332322424728_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/680654133_2437372446686425_4587695043591714117_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/682483150_1916410368986205_8206051518644285918_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/682705859_1331006852284357_3589635631927471185_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/682862804_3354496358083480_1337838366260578665_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/683430449_1506697717566380_2984286572409043615_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/683739188_971902928572718_7595329402315187878_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/683823912_3913134455650117_5556992368343251084_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/683848599_2478992359195877_68575791025551242_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/683901328_1667140477822737_6411837988332081977_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/685113916_1526906245615237_6347542085996641507_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/685203811_968090482598875_8002555942336436446_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/686896111_1960104154611242_1655962371793141488_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/687532367_955468520435497_5781483754248210742_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/687625657_3102634169928799_8095014611000260648_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/687664381_1661615708412510_1409953539867609539_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/687689980_2084468178799109_433555105731047490_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/687840060_1256069463275678_1809613460759997422_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/687986190_891445577241403_3334805598497156254_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/688295127_943713791790660_3440075542284224910_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/689901344_3488550044631512_2788092845546692101_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/694328784_1323310773085105_7785883781517153531_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/694624634_1283509400637367_4391866861457095304_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/694667802_1495442202226843_4060420755494191327_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/695732356_860302393781087_2831191295424464941_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/695747977_859535743185685_2995156699454060043_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/695814887_2534555520328475_6003191130989522575_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/696062633_985781620519961_5946156716631317186_n.jpg',
+      'headings/7 photo documentation/1. ARAL Summer (May 6-June 2, 2026)/700142608_1032266316030770_2562627103031670786_n.jpg'
+    ]
+  },
+  {
+    title: 'Three Term Orientation (May 13, 2026)',
+    photos: [
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/668829102_2171366143648898_5352040179832086399_n.png',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/671343503_964290199643868_6601625901350856857_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/688105838_1013292844595661_3278355940477990131_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/690856800_1456378659122903_7337172015760980239_n.png',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/690868044_997806709253327_4494459394750229255_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/690874489_1458550165475133_1489824980894635566_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/690898149_1631624658118580_2733117633098431156_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/691912286_944051738438142_1735598102918466214_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/692115549_1302316374894152_8529917914539995679_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/695178987_753540804489982_4870234322357338376_n.jpg',
+      'headings/7 photo documentation/2. Three Term Orientation (May 13, 2026)/699593992_1504848637682991_3651390706748771462_n.jpg'
+    ]
+  },
+  {
+    title: 'Faculty Meeting 1 (May 19, 2026)',
+    photos: [
+      'headings/7 photo documentation/3. Faculty Meeting 1 (May 19, 2026)/691111572_1432333638575242_4459237134017245977_n.jpg',
+      'headings/7 photo documentation/3. Faculty Meeting 1 (May 19, 2026)/692203604_1676144189991570_5922449667368086835_n.jpg',
+      'headings/7 photo documentation/3. Faculty Meeting 1 (May 19, 2026)/695674028_2197055561058379_7209344961109134604_n.jpg',
+      'headings/7 photo documentation/3. Faculty Meeting 1 (May 19, 2026)/701725343_4370990136470532_6354562266510495044_n.jpg',
+      'headings/7 photo documentation/3. Faculty Meeting 1 (May 19, 2026)/703976951_1718383382848086_4111260095363149006_n.jpg'
+    ]
+  },
+  {
+    title: 'Brigada Eskwela (June 1–5, 2026)',
+    photos: [
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/688414016_1017019010841497_5424121783235063767_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/708304122_1535178621355870_8489450028858415009_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/708652741_2028901701172623_4946527085473012625_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/708865697_1579048980464657_4181108124717461493_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709325486_2071795327548157_9194500651297481402_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709345527_1781633589940734_559374467399646581_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709365532_1375618087950461_2078061329383856583_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709445492_4448757845340885_6680830318405726990_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709445496_27023543377304029_3273048050102555499_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709465505_1505666344907163_5224438223051898976_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709485500_4345993889014590_5568262106579435619_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709505537_1508345767743245_3816423278516679196_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709620834_1508534544263261_2466569324249084994_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709634612_3152477764950275_7660735304017805823_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709686539_1024431530107129_3726782874648941503_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709699203_2065978124802298_8013126884508613400_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709728236_982468077747229_8594214846986192565_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709802215_859293747228935_3885961302039898056_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709802217_967626009234050_7081302932265886324_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709820649_1621347516280188_2251025591463833519_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709840699_3273107539527369_4980198594013595756_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/709860826_975150858637687_4021797958356285173_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710039950_1757899082245123_6663109716267013436_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710137806_4452928684977571_6819032971588793414_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710146843_971317599109927_7743987537553897180_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710156911_1535730198212538_2867006823153943078_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710156911_2093248098280848_7107880528726003538_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710215379_27042385198758007_4360989977967162226_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710225144_2999864593693666_603465050741578161_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710245138_1684880549206973_2566137559518801814_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710245145_1016309134153750_6529517555116526889_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710278959_2510522369398588_5485482253769618750_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710350853_1339065328160127_7377888679663763976_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710372876_1707481307130871_5863465669801176431_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710372876_999952185960570_399061447703761089_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710423058_921330897664611_855504744997276757_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710460803_1401247531904381_6360762688314645742_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710473620_2399308050582524_1100557006320069441_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710481569_1001297042859561_2753152890295374206_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710516719_995535672874816_1042111848791068611_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710648392_3315850111919165_6202602345770412234_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710684738_1316500277218434_3041392479604034502_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710684738_901654238999985_8655736948523176723_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710699339_1034298732261062_7698176031637049072_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710699383_1009605501535299_5826613385304715145_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710722038_1334308495486263_8800569913601561986_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710848006_1015369580960982_7574086596378786056_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710867998_848355704992864_5848627655987086651_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/710927971_2093032478256980_4303084629123856069_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711045155_1715527772772980_3461369217680566043_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711095373_1309802951366421_1508691738623122004_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711135369_860892843208029_4995948042150897299_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711188604_1542315450588233_101273344211828494_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711288637_1625321485221993_4319833045447816410_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711328695_1713426709809014_5021487027493456125_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711388727_1435556715254204_1135975592570823219_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711405527_1342853957939700_301119234545892739_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711445538_2421543208357849_6336820029305301154_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711493363_2173417730254144_9208410237449761062_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711543092_2294679944391252_5790149104043249724_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711543135_752599917898137_7653095181353997813_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711642841_2461800490912998_7970820627386860518_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711774699_991291880314794_400073773257493888_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711774699_995711112859478_2013341509279390356_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711774700_1354558749849066_3551594556007924008_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711813524_1951969628856729_5960820148903722178_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711885123_1322218629243607_2780817864007212196_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711925121_1006387105632296_3152827780625435040_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/711925121_959531100414728_5844640769938137595_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712005095_822028230762337_3035327640875865089_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712025094_1527982885361525_5622126693592168465_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712065112_2254200118687421_1294336240313152904_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712098651_913044441793585_969929862857279213_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712114893_1022246400364180_2208586022923969260_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712114893_1393460449284570_1893705278041115379_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712132820_1247342960811610_6040560858637102455_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712178319_2287440028723808_6629611895355580108_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712266440_2670793663321641_2249048258130856752_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712286501_999534545797432_3799782150649700715_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712338803_2285825581820929_7935336381540431971_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712338815_1647505546505514_5757580885494627681_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712356326_1019375077100820_5145165273554323207_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712356334_2078451540219774_9195971378556415839_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712408936_1508638857371625_1582626706071957621_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712443377_2093067557924918_5094255728691341170_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712503163_965634446311977_3456978432472788954_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712503164_1298333999071884_5590750059687303872_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712503164_1549840070114925_4316795313962379805_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712503164_3910991655870691_3106753428600366337_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712543168_790076600740710_19085549669001346_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712563091_1309546518036589_7689543476106220566_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712603120_1528649475654986_4506991232025942296_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/712703124_1418167040072544_4331144269512869487_n.jpg',
+      'headings/7 photo documentation/4. Brigada (June 1-5, 2026)/717627440_3160989124291304_3551688433331757223_n.jpg'
+    ]
+  },
+  {
+    title: 'Faculty Meeting 2 & LAC 1 (June 4, 2026)',
+    photos: [
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/711075396_1371923561498270_439646979132246080_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/711445538_1297173009204744_1081660829544346528_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/711985105_2369251726932589_7771058364999963543_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/712523127_1529920488558992_3614899021768349641_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/713403217_1682214886152128_4858739274330244067_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/713463178_1634545077628390_6885221034962865252_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/714083099_2391867384654497_1102889405695432735_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/714463247_1495217428969605_3357715184637682204_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/714597836_1018726430661212_714064300955747009_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/714610364_1704263164326611_7261833078147577395_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/715263070_1677437059950927_3911386593633062954_n.jpg',
+      'headings/7 photo documentation/5. Faculty Meeting 2 and LAC 1 (June 4, 2026)/715396767_1921950971847715_7817932240863995565_n.jpg'
+    ]
+  },
+  {
+    title: '1st SPTA Meeting (June 9, 2026)',
+    photos: [
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/715769866_1961681851138411_294859852003394288_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/715889865_1691913522140754_2695762318810959157_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/716509914_1016260114280534_1085708027165002877_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/716897260_1185274124666577_5249775105286630936_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/717095374_1727350558443633_1397709248618936496_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/717115032_1047184281068339_3418163107459045958_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/717186002_968146976222503_752219374123374371_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/717273298_996988832736429_8797017657725078849_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/718051366_989740296980853_26371415930956407_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/718117906_2076487899947601_7718152793684480747_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/718150500_1325036316446166_8466275256577169049_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/718263954_1928443664505838_4003211211164801057_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/718538495_36099938436319329_3096031203018793664_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/719098521_1662160785019356_8997863655421495593_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/719188050_981864208075231_8489245564444107640_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/720276546_842726285187079_8413644244523880912_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/720386577_1946821866018235_1676350944244536424_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/720539783_1040959351838716_1600698231677147490_n.jpg',
+      'headings/7 photo documentation/6. 1st SPTA Meeting (June 9, 2026)/721134721_3016897015183230_2999675092520229695_n.jpg'
+    ]
+  },
+  {
+    title: 'Grade 1 Vision Screening (June 10, 2026)',
+    photos: [
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/716649917_1035579455566279_6167643326335885674_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/717186033_1320191459605748_8906692548765120886_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/717860188_4539154789743146_2603069651339295173_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/719126317_4363537440534725_8073148305647988234_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/719753616_827583776882255_2530184735780484468_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/719797597_867979725769559_9195593950113583339_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/719890963_4190950861215998_7170262837731835034_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/720018814_2254283688661850_4714336838970690200_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/720206028_1004865825818433_2724692613280510778_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/720946382_1355389149802712_9090466053287344364_n.jpg',
+      'headings/7 photo documentation/7. Grade 1 Vision Screening (June 10, 2026)/720959189_4397877250477533_2550671285018142241_n.jpg'
+    ]
+  },
+  {
+    title: 'Earthquake Drill (June 18, 2026)',
+    photos: [
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724009919_3126600214206237_4833429724576977157_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724067893_1003192042482688_9112840492822230638_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724142761_1746021806391715_3922000658310876073_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724188447_1012179401301052_8342414044302109775_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724215792_813919111655134_3239910806951938561_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724251406_1054306257122058_4790375343065042199_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724320378_2206318206784201_3077587580005898563_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724368494_973437355506509_3956522511927650411_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724526390_1993395298232576_7331775833767648568_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724624030_1326369276358694_8536023238087773116_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724782233_1949478839090596_4201652102658286985_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/724848535_1420586729889451_6884662463841992293_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/725014930_2050062472256591_479045858971021242_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/725024956_1295891968958173_6863621801581805607_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/725067164_1542951673881855_2667785082274698925_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/725248645_1650714766227094_8606186210249652373_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/725802842_3084756515059105_2352129097900947734_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/726230986_1024571193237134_1566503869058207150_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/726289497_1689604318748616_1590002740664581872_n.jpg',
+      'headings/7 photo documentation/8. Earthquake Drill (June 18, 2026)/727440412_1797431821573616_1486168540675051140_n.jpg'
+    ]
+  },
+  {
+    title: 'Faculty Meeting (June 26, 2026)',
+    photos: [
+      'headings/7 photo documentation/10. Faculty Meeting (June 26, 2026)/728744248_1953487695305331_229164219762531858_n.jpg',
+      'headings/7 photo documentation/10. Faculty Meeting (June 26, 2026)/729389159_1008440812101703_1098242773700685603_n.jpg',
+      'headings/7 photo documentation/10. Faculty Meeting (June 26, 2026)/729896310_1526181421672604_5950566256142424497_n.jpg',
+      'headings/7 photo documentation/10. Faculty Meeting (June 26, 2026)/732252757_1028555132905198_3630973551677517725_n.jpg'
+    ]
+  },
+  {
+    title: 'Feeding Program (June 26, 2026)',
+    photos: [
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/727266835_1751428936295208_1842611310086502228_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/728502775_1317603987245589_2108172622351227591_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/728502775_2032181297376639_2765500846389534919_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/728606244_869224589579159_329883760929882842_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/729324898_1055265073824482_2501810890769333915_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/729374190_974059075612789_7283441525611796279_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/729602773_1585974646294490_2374191102860627528_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/729819490_1555402712967966_1323394055554034201_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/730347731_1597255201998522_6306778469303724510_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/730652969_1734574077868073_4017983275398365012_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/730775683_2191408944734900_4848103528758792555_n.jpg',
+      'headings/7 photo documentation/11. Feeding Program (June 26, 2026)/731173132_1249904727096926_6001296228245073588_n.jpg'
+    ]
+  },
+  {
+    title: 'Operation Kapkap (June 29, 2026)',
+    photos: [
+      'headings/7 photo documentation/12. Operation Kapkap (June 29, 2026)/730451168_27341663708869633_28788903327624334_n.jpg',
+      'headings/7 photo documentation/12. Operation Kapkap (June 29, 2026)/734718080_2470724973441987_6321254562988297204_n.jpg'
+    ]
+  },
+  {
+    title: 'Faculty Meeting (July 2, 2026)',
+    photos: [
+      'headings/7 photo documentation/13. Faculty Meeting (July 2, 2026)/731334486_1435903965221979_5914585340631553070_n.jpg',
+      'headings/7 photo documentation/13. Faculty Meeting (July 2, 2026)/734339218_2407316343085610_7332313811964613892_n.jpg',
+      'headings/7 photo documentation/13. Faculty Meeting (July 2, 2026)/735543485_2478958345847805_8212185966710173918_n.jpg'
+    ]
+  },
+  {
+    title: 'Anti-Bullying Activity (July 6, 2026)',
+    photos: [
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/734545830_2292598371549226_1956543814364940202_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/737297349_972418732441677_4081350914756114819_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/737720314_4493671647546594_4441896481131997367_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/738010969_1514990863445964_4771545436805158290_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/738283643_1029399636151607_6012005625503289690_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/739100646_1248877993882356_575179369971612299_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/739377792_890139164146934_5267602196078753944_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/739609225_27800366666247651_1432195479008232242_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/739781784_1507962647795376_7536247749737392370_n.jpg',
+      'headings/7 photo documentation/14. Anti-bullying (July 6, 2026)/739840629_3790261751130002_6831745467874053599_n.jpg'
+    ]
+  },
+  {
+    title: 'Grade 4 IEP Meeting (July 17, 2026)',
+    photos: [
+      'headings/7 photo documentation/15. Grade 4 IEP Meeting (July 17, 2026)/742489484_905185808609922_2385093470126113707_n.jpg',
+      'headings/7 photo documentation/15. Grade 4 IEP Meeting (July 17, 2026)/742770716_1041457918585270_6931005616459217635_n.jpg',
+      'headings/7 photo documentation/15. Grade 4 IEP Meeting (July 17, 2026)/743269972_962639543477450_2725159867342307392_n.jpg',
+      'headings/7 photo documentation/15. Grade 4 IEP Meeting (July 17, 2026)/745768478_1539840033666955_2641930426983681301_n.jpg',
+      'headings/7 photo documentation/15. Grade 4 IEP Meeting (July 17, 2026)/747207250_4524949084385482_9051726182205018925_n.jpg',
+      'headings/7 photo documentation/15. Grade 4 IEP Meeting (July 17, 2026)/747289770_1008468958778524_8092865223937454263_n.jpg'
+    ]
+  },
+  {
+    title: 'LAC Session — Bullying & Safety (July 17, 2026)',
+    photos: [
+      'headings/7 photo documentation/16. LAC Session on bullying and school shooting and stabbing (July 17, 2026)/744314942_2492231277957092_4971360402529189884_n.jpg',
+      'headings/7 photo documentation/16. LAC Session on bullying and school shooting and stabbing (July 17, 2026)/746451986_1090302919986919_9189812347382223614_n.jpg',
+      'headings/7 photo documentation/16. LAC Session on bullying and school shooting and stabbing (July 17, 2026)/746908636_2403067833437479_8942452934951756526_n.jpg',
+      'headings/7 photo documentation/16. LAC Session on bullying and school shooting and stabbing (July 17, 2026)/747572831_774078039120542_2571235875420082119_n.jpg'
+    ]
+  }
+];
+
+// ── Nav ──
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.section === id));
+  document.getElementById('heroSection').style.display = (id === 'home') ? '' : 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('navList').classList.remove('open');
+}
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', e => { e.preventDefault(); showSection(link.dataset.section); });
+});
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('navList').classList.toggle('open');
+});
+
+// ── Lightbox ──
+let lbEvent = 0, lbIndex = 0;
+
+function openGallery(eventIdx) {
+  lbEvent = eventIdx;
+  lbIndex = 0;
+  buildThumbs();
+  renderLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function buildThumbs() {
+  const tb = document.getElementById('lbThumbs');
+  tb.innerHTML = '';
+  EVENTS[lbEvent].photos.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'thumb ' + (i+1);
+    img.className = 'lb-thumb' + (i === 0 ? ' active' : '');
+    img.onclick = () => { lbIndex = i; renderLb(); };
+    tb.appendChild(img);
+  });
+}
+
+function renderLb() {
+  const evt = EVENTS[lbEvent];
+  document.getElementById('lbTitle').textContent = evt.title;
+  document.getElementById('lbImg').src = evt.photos[lbIndex];
+  document.getElementById('lbCounter').textContent = (lbIndex + 1) + ' / ' + evt.photos.length;
+  document.querySelectorAll('.lb-thumb').forEach((t, i) => t.classList.toggle('active', i === lbIndex));
+  // scroll active thumb into view
+  const tb = document.getElementById('lbThumbs');
+  const active = tb.querySelector('.lb-thumb.active');
+  if (active) active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+}
+
+function lbMove(dir) {
+  const len = EVENTS[lbEvent].photos.length;
+  lbIndex = (lbIndex + dir + len) % len;
+  renderLb();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') lbMove(1);
+  else if (e.key === 'ArrowLeft') lbMove(-1);
+  else if (e.key === 'Escape') closeLightbox();
+});
+
+// Click outside image to close
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+</script>
+</body>
+</html>
